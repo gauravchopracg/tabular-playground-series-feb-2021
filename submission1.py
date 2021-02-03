@@ -1,7 +1,7 @@
 import pandas as pd
 import lightgbm as lgb
 from sklearn.model_selection import train_test_split
-
+from sklearn.metrics import mean_squared_error
 
 train = pd.read_csv('train.csv')
 print('data loaded successfully')
@@ -17,10 +17,13 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random
 print('train_test_split: complete')
 train_data = lgb.Dataset(X_train, label=y_train)
 test_data = lgb.Dataset(X_test, label=y_test)
-param = {'num_leaves': 31, 'objective': 'regression'}
+param = {'num_leaves': 31, 'objective': 'regression', 'metric': 'rmse'}
 num_round = 10
 print('training model')
 bst = lgb.train(param, train_data, num_round, valid_sets=[test_data])
+
+y_pred = bst.predict(X_test, num_iteration=bst.best_iteration)
+print('Validation Score is:', mean_squared_error(y_test, y_pred, squared=False))
 
 test = pd.read_csv('test.csv')
 
