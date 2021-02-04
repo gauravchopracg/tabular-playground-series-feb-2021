@@ -17,10 +17,11 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random
 print('train_test_split: complete')
 train_data = lgb.Dataset(X_train, label=y_train)
 test_data = lgb.Dataset(X_test, label=y_test)
-param = {'num_leaves': 31, 'objective': 'regression', 'metric': 'rmse'}
-num_round = 10
+param = {'objective': 'regression', 'metric': 'rmse'}
+# num_round = 10
 print('training model')
-bst = lgb.train(param, train_data, num_round, valid_sets=[test_data])
+# bst = lgb.train(param, train_data, num_round, valid_sets=[test_data])
+bst = lgb.train(param, train_data, valid_sets=[test_data])
 
 y_pred = bst.predict(X_test, num_iteration=bst.best_iteration)
 print('Validation Score is:', mean_squared_error(y_test, y_pred, squared=False))
@@ -36,5 +37,5 @@ preds = bst.predict(test, num_iteration = bst.best_iteration)
 submission = pd.read_csv('sample_submission.csv')
 submission['target'] = preds
 print('saving submission file')
-submission.to_csv('submission1.csv', index=False)
+submission.to_csv('submission2.csv', index=False)
 print('successfully saved submission file')
